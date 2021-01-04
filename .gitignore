@@ -1,0 +1,7 @@
+workspace\*
+*.png
+*.osm
+*.pyc
+*.log
+*.cfg
+*.send
