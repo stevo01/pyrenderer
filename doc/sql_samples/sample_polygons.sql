@@ -1,0 +1,1 @@
+select osm_id, way, tags from planet_osm_polygon limit 1000
