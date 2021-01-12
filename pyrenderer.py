@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
     start = timeit.default_timer()
     log = logger_init("pyrenderer",
-                      "pyrenderer.log",
+                      "./log/pyrenderer.log",
                       level_file=DEBUG,
                       level_console=INFO)
 

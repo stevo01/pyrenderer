@@ -16,17 +16,16 @@ note: jrenderer is part of josm plugin JOSM-seachart
 # setup workbench 
 ## clone the project
 ```
-t.b.d.
+git clone https://github.com/stevo01/pyrenderer.git
+cd pyrenderer
 ```
 
-## install osmium
+## install required applications and libs
 ```
-apt install osmium
-```
-
-## install python3 and required libs
-apt install python3 pip3
+sudo apt install osmium-tool python3 python3-pip
+sudo apt install openjdk-8-jre-headless 
 pip3 install osmium
+```
 
 # example sample usage
 

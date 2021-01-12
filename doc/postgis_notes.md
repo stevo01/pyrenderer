@@ -57,7 +57,6 @@ WHERE ST_Contains(
     ,planet_osm_point.way);
 
 ```
-xmin, ymin, xmax, ymax
 
 # bookmarks
 https://postgis.net/workshops/postgis-intro/geometries_exercises.html
