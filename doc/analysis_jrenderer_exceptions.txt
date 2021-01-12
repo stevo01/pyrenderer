@@ -1,7 +1,5 @@
 08.01.2021
 
-
-
 following files causes jrenderer error (exeption or timeout)
 2175-1317-12.osm 22/0/168623
 2130-1315-12.osm 22/1/168623
@@ -100,6 +98,3 @@ java -jar ./extutils/jrender.jar workingdir/osm-extracts/ workingdir/tilecache/ 
 java -jar ./extutils/jrender.jar workingdir/osm-extracts/ workingdir/tilecache/ 12 2002 1315
 java -jar ./extutils/jrender.jar workingdir/osm-extracts/ workingdir/tilecache/ 12 2048 1317
 java -jar ./extutils/jrender.jar workingdir/osm-extracts/ workingdir/tilecache/ 12 2049 1325
-
-
-

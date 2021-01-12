@@ -43,10 +43,10 @@ not required tables:
   planet_osm_roads
 
 
+# SQL Query samples
 
-# select points in bounding box
+## select points in bounding box
 ```
-
 SELECT osm_id
 FROM planet_osm_point
 WHERE ST_Contains(
@@ -57,6 +57,34 @@ WHERE ST_Contains(
     ,planet_osm_point.way);
 
 ```
+
+## query of single z9 area with psql
+```
+select osm_id, tags, ST_AsText(way), way
+  from planet_osm_point
+  where (tags ? 'seamark:type')
+    AND ST_Intersects(
+		  ST_Transform(ST_MakeEnvelope(11.074219, 54.265224, 12.128906, 53.644638, 4326), 3857)
+		  ,planet_osm_point.way
+		);
+
+select osm_id, tags, ST_AsText(way), way
+  from planet_osm_polygon
+  where (tags ? 'seamark:type')
+    AND ST_Intersects(
+		  ST_Transform(ST_MakeEnvelope(11.074219, 54.265224, 12.128906, 53.644638, 4326), 3857)
+		  ,planet_osm_polygon.way
+		);
+
+select osm_id, tags, ST_AsText(way), way
+  from planet_osm_line
+  where (tags ? 'seamark:type')
+    AND ST_Intersects(
+		  ST_Transform(ST_MakeEnvelope(11.074219, 54.265224, 12.128906, 53.644638, 4326), 3857)
+		  ,planet_osm_line.way
+		);
+```
+
 
 # bookmarks
 https://postgis.net/workshops/postgis-intro/geometries_exercises.html

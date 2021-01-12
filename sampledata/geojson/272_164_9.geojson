@@ -1,0 +1,10 @@
+{
+  "type": "Feature",
+  "geometry": { "type": "Polygon",
+                "coordinates": [[[11.074219, 53.644638],
+                                 [12.128906, 53.644638],
+                                 [12.128906, 54.265224],
+                                 [11.074219, 54.265224],
+                                 [11.074219, 53.644638]]]},
+  "properties": { "description":"sample area for sea chart renderer"}
+}
