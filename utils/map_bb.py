@@ -29,8 +29,8 @@ def num2MapBB(xtile, ytile, z, conv_type=conversion_type.normal):
         factor = pow(2, z_diff)
         x_z12_min = max(xtile * factor - offset, 0)
         y_z12_max = max(ytile * factor - offset, 0)
-        x_z12_max = xtile * factor + factor + offset
-        y_z12_min = ytile * factor + factor + offset
+        x_z12_max = min(xtile * factor + factor + offset, 4096)
+        y_z12_min = min(ytile * factor + factor + offset, 4096)
 
         max_lat, max_lon = num2deg(x_z12_max, y_z12_max, 12)
         min_lat, min_lon = num2deg(x_z12_min, y_z12_min, 12)

@@ -5,3 +5,7 @@ workspace\*
 *.log
 *.cfg
 *.send
+ws\*
+ws
+ext-src\*
+ext-src
