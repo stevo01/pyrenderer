@@ -11,7 +11,7 @@ class conversion_type():
 # Tile numbers to lon./lat.
 def num2MapBB(xtile, ytile, z, conv_type=conversion_type.normal):
 
-    if z < 9 or z > 12:
+    if z < 9 or z > 18:
         return None
 
     if conv_type == conversion_type.normal:
@@ -49,6 +49,8 @@ class MapBB:
         self.minlon = minlon
         self.maxlat = maxlat
         self.maxlon = maxlon
+        self.lat=(minlat + maxlat) / 2
+        self.lon=(minlon + maxlon) / 2
 
     def getbbox(self):
         ret = [self.minlon, self.minlat, self.maxlon, self.maxlat]
@@ -77,3 +79,12 @@ class MapBB:
         ret += "]]}, \"properties\": { }}"
 
         return ret
+    
+    def GetOverpassQuery(self):
+            out ="[timeout:25];(" 
+            out+="way [\"seamark:type\"] ({},{},{},{});".format(self.minlat,self.minlon,self.maxlat,self.maxlon)
+            out+="relation [\"seamark:type\"] ({},{},{},{});".format(self.minlat,self.minlon,self.maxlat,self.maxlon)
+            out+="node [\"seamark:type\"] ({},{},{},{});".format(self.minlat,self.minlon,self.maxlat,self.maxlon)
+            out+=");out meta;"
+            
+            return out

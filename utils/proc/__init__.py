@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 
-def ExecuteCmdExt(_cmd, workingdir=None):
+def ExecuteCmdExt(_cmd, workingdir=None, timeout=800.0):
     outstr = ''
     cmd = _cmd  # .split()
 
@@ -20,9 +20,9 @@ def ExecuteCmdExt(_cmd, workingdir=None):
                                cwd=workingdir)
 
     try:
-        exitcode = process.wait(60.0 * 5)
+        exitcode = process.wait(timeout)
     except:
-        print("Unexpected error:", sys.exc_info()[0])
+        logger.error("Unexpected error:", sys.exc_info()[0])
         return "timeout", -1
 
     for line in iter(process.stdout.readline, ' '):

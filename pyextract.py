@@ -32,10 +32,6 @@ def write_configfile(filename, outdir, maplist):
 if __name__ == '__main__':
 
     start = timeit.default_timer()
-    log = logger_init("osmium_extract",
-                      "osmium_extract.log",
-                      level_file=DEBUG,
-                      level_console=INFO)
 
     parser = argparse.ArgumentParser(description='Process some integers.')
 
@@ -50,32 +46,85 @@ if __name__ == '__main__':
                         default="./workingdir/",
                         help='output directory')
 
-    parser.add_argument('-y',
-                        dest='y_z9',
+    parser.add_argument('-y_min',
+                        dest='y_min_z9',
                         type=int,
-                        default=163,
+                        default=161,
                         help='x position of tile (zoomlevel 9)')
-
+    
+    parser.add_argument('-y_max',
+                        dest='y_max_z9',
+                        type=int,
+                        default=161,
+                        help='x position of tile (zoomlevel 9)')
+    
+    parser.add_argument('-x_min',
+                        dest='x_min_z9',
+                        type=int,
+                        default=274,
+                        help='x position of tile (zoomlevel 9)')
+    
+    parser.add_argument('-x_max',
+                        dest='x_max_z9',
+                        type=int,
+                        default=274,
+                        help='x position of tile (zoomlevel 9)')
+    
+    parser.add_argument('-x',
+                        dest='x',
+                        type=int,
+                        default=-1,
+                        help='x position of tile (zoomlevel 9)')
+    
+    parser.add_argument('-y',
+                        dest='y',
+                        type=int,
+                        default=-1,
+                        help='y position of tile (zoomlevel 9)')
+    
     parser.add_argument('-g', '--generate', action='store_true')
 
+    parser.add_argument('-l',
+                        dest='logfilename',
+                        default="./log/pyextract.log",
+                        help='logfile')
+
     args = parser.parse_args()
+    
+    log = logger_init("pyextractr",
+                      args.logfilename,
+                      level_file=DEBUG,
+                      level_console=INFO)
+
     in_filename = args.inputfilename.name
     z = 9  # zoomlevel
-    y_z9 = args.y_z9
+    
+    if args.x is not -1 and args.y is not -1:
+        x_min_z9 = args.x
+        x_max_z9 = args.x
+        y_min_z9 = args.y
+        y_max_z9 = args.y 
+    else:
+        x_min_z9 = args.x_min_z9
+        x_max_z9 = args.x_max_z9
+        y_min_z9 = args.y_min_z9
+        y_max_z9 = args.y_max_z9
 
     print("generate config file for command \"osmium extract\": {}".format(in_filename))
     print("input file: {}".format(in_filename))
     print("output dir: {}".format(args.outdir))
-    print("y={}, x=0-512, z={}".format(args.y_z9,z))
+    print("x_min={}, x_max={}, y_min={}, y_max={}, z={}".format(x_min_z9, x_max_z9, y_min_z9, y_max_z9,z))
 
     # stage 1 / generate config file with level 9
     maplist = list()
-    for x_z9 in range(0, 512):
-        maplist.append([x_z9, y_z9, z, num2MapBB(x_z9, y_z9, z, conversion_type.extendet)])
+    
+    for y_z9 in range(y_min_z9, y_max_z9+1):
+        for x_z9 in range(x_min_z9, x_max_z9+1):
+            maplist.append([x_z9, y_z9, z, num2MapBB(x_z9, y_z9, z, conversion_type.extendet)])
 
     confdir = args.outdir + "cfg/"
     ensure_dir(confdir)
-    outfile = confdir + "osmium_extract_y{}_z9.cfg".format(args.y_z9)
+    outfile = confdir + "osmium_extract_z9.cfg"
 
     if os.path.exists(outfile):
         os.remove(outfile)
@@ -97,51 +146,52 @@ if __name__ == '__main__':
         print(convert_cmd)
 
     # stage 2 / generate config file with level 10-12
-    for x_z9 in range(0, 511):
-
-        in_filename = osmdir + "{}-{}-{}.osm".format(x_z9, y_z9, z)
-
-        filesize = os.stat(in_filename).st_size
-        if filesize < 100:
-            log.info("generation skipped for in_filename {}".format(in_filename))
-            continue
-
-        maplist = list()
-        for xadj_z10 in [0, 1]:
-            for yadj_z10 in [0, 1]:
-                x_z10 = x_z9 * 2 + xadj_z10
-                y_z10 = y_z9 * 2 + yadj_z10
-                maplist.append([x_z10, y_z10, 10, num2MapBB(x_z10, y_z10, 10, conversion_type.extendet)])
-
-        for xadj_z11 in [0, 1, 2, 3]: 
-            for yadj_z11 in [0, 1, 2, 3]: 
-                x_z11 = x_z9 * 4 + xadj_z11
-                y_z11 = y_z9 * 4 + yadj_z11
-                maplist.append([x_z11, y_z11, 11, num2MapBB(x_z11, y_z11, 11, conversion_type.extendet)])
-
-        for xadj_z12 in [0, 1, 2, 3, 4, 5, 6, 7]:
-            for yadj_z12 in [0, 1, 2, 3, 4, 5, 6, 7]: 
-                x_z12 = x_z9 * 8 + xadj_z12
-                y_z12 = y_z9 * 8 + yadj_z12
-                maplist.append([x_z12, y_z12, 12, num2MapBB(x_z12, y_z12, 12, conversion_type.extendet)])
-
-        outfile = confdir + "osmium_extract_x{}-y{}_z9.cfg".format(x_z9, args.y_z9)
-
-        if os.path.exists(outfile):
-            os.remove(outfile)
-
-        write_configfile(outfile, osmdir, maplist)
-        convert_cmd = "osmium extract --overwrite --config {} {}".format(outfile, in_filename)
-
-        if(args.generate is True):
-            outstr, ret = ExecuteCmdExt(convert_cmd)
-            if ret != 0:
-                log.info("generation failed / outfile: {}".format(outfile))
-                log.error(outstr)
+    for y_z9 in range(y_min_z9, y_max_z9+1):
+        for x_z9 in range(x_min_z9, x_max_z9+1):
+    
+            in_filename = osmdir + "{}-{}-{}.osm".format(x_z9, y_z9, z)
+    
+            filesize = os.stat(in_filename).st_size
+            if filesize < 100:
+                log.info("generation skipped for in_filename {}".format(in_filename))
+                continue
+    
+            maplist = list()
+            for xadj_z10 in [0, 1]:
+                for yadj_z10 in [0, 1]:
+                    x_z10 = x_z9 * 2 + xadj_z10
+                    y_z10 = y_z9 * 2 + yadj_z10
+                    maplist.append([x_z10, y_z10, 10, num2MapBB(x_z10, y_z10, 10, conversion_type.extendet)])
+    
+            for xadj_z11 in [0, 1, 2, 3]: 
+                for yadj_z11 in [0, 1, 2, 3]: 
+                    x_z11 = x_z9 * 4 + xadj_z11
+                    y_z11 = y_z9 * 4 + yadj_z11
+                    maplist.append([x_z11, y_z11, 11, num2MapBB(x_z11, y_z11, 11, conversion_type.extendet)])
+    
+            for xadj_z12 in [0, 1, 2, 3, 4, 5, 6, 7]:
+                for yadj_z12 in [0, 1, 2, 3, 4, 5, 6, 7]: 
+                    x_z12 = x_z9 * 8 + xadj_z12
+                    y_z12 = y_z9 * 8 + yadj_z12
+                    maplist.append([x_z12, y_z12, 12, num2MapBB(x_z12, y_z12, 12, conversion_type.extendet)])
+    
+            outfile = confdir + "osmium_extract_x{}-y{}_z9.cfg".format(x_z9, y_z9)
+    
+            if os.path.exists(outfile):
+                os.remove(outfile)
+    
+            write_configfile(outfile, osmdir, maplist)
+            convert_cmd = "osmium extract --overwrite --config {} {}".format(outfile, in_filename)
+    
+            if(args.generate is True):
+                outstr, ret = ExecuteCmdExt(convert_cmd)
+                if ret != 0:
+                    log.info("generation failed / outfile: {}".format(outfile))
+                    log.error(outstr)
+                else:
+                    log.info("generation passed / outfile: {}".format(outfile))
             else:
-                log.info("generation passed / outfile: {}".format(outfile))
-        else:
-            print(convert_cmd)
+                print(convert_cmd)
 
     stop = timeit.default_timer()
     print('Time: ', stop - start)
