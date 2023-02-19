@@ -45,40 +45,6 @@ sudo apt install openjdk-11-jre-headless
 
 # example
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-usage
-
 the following command sequences generates the sea mark tiles in zoom level 9.18 for following area:
 
 geo json:
@@ -89,7 +55,7 @@ tile info:
 
 ## files and directories
 
- name: ./workingdir/in/osm      
+ name: ./workingdir/in/osm
  description: osm file(s) from overpass api
 
  name: ./workingdir/osm-extracts/
@@ -115,18 +81,23 @@ tile info:
     272-164-9.osm
 
 ## fetch osm file with all seamarks from openstreetmap database (http://overpass-api.de/api/interpreter)
-```
+
+```bash
 mkdir -p workingdir/in/osm
-wget -O workingdir/in/osm/seamarks_planet.osm --timeout=600 --post-file=./sampledata/query/overpass-api-planet.ql "http://overpass-api.de/api/interpreter"
+wget -O workingdir/in/osm/seamarks_planet.osm --timeout=600 --post-file=./sampledata/query/overpass-api-planet.overpassql "http://overpass-api.de/api/interpreter"
 ```
 
 ## generate osm file extract
+
 The following sample generates osm extracts for following tile:
-```
+
+```bash
+mkdir log
 python3 pyextract.py -g -i ./workingdir/in/osm/seamarks_planet.osm -o ./workingdir/ -y 164 -x 272
 ```
 
 ## generate tiles
+
 The following sample generates sea mark tiles.
 
 options:
@@ -134,10 +105,11 @@ options:
  -i path to osm extracts needs to be rendered
  -d run in "server mode" (like a daemon)
 
-```
+```bash
 python3 pyrenderer.py -i ./workingdir/osm-extracts/ -o ./workingdir/tilecache/
 ```
 
-# bookmarks
+## bookmarks
+
   git@github.com:stevo01/renderer.git
   https://github.com/OpenNauticalChart/renderer.git
