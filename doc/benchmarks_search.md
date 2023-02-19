@@ -10,7 +10,7 @@ around 27 sec.
 java -jar jsearch.jar ./tmp 272 164
 
 # measure extract of single z9 area with overpass
-time wget -O test_overpass.osm --timeout=600 --post-file=./query/overpass-api-272_164_9.ql "http://overpass-api.de/api/interpreter"
+time wget -O test_overpass.osm --timeout=600 --post-file=./query/overpass-api-272_164_9.overpassql "http://overpass-api.de/api/interpreter"
 --2020-12-29 21:04:36--  http://overpass-api.de/api/interpreter
 Resolving overpass-api.de (overpass-api.de)... 2a01:4f8:110:502c::2, 2a01:4f8:120:6464::2, 178.63.48.217, ...
 Connecting to overpass-api.de (overpass-api.de)|2a01:4f8:110:502c::2|:80... connected.

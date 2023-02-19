@@ -21,10 +21,9 @@ notes for analysis of java scripts jrenderer and jsearch
     "properties": { }
   }
 
-
 ## load data from overpass api
 ```
-wget -O osm/xapi-272_164_9.osm --timeout=600 --post-file=./query/overpass-api-272_164_9.ql "http://overpass-api.de/api/interpreter"
+wget -O osm/xapi-272_164_9.osm --timeout=600 --post-file=./query/overpass-api-272_164_9.overpassql "http://overpass-api.de/api/interpreter"
 ```
 
 ## copy extract
